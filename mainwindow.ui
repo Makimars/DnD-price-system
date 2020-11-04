@@ -26,62 +26,16 @@
        </attribute>
        <layout class="QHBoxLayout" name="horizontalLayout_7">
         <item>
-         <widget class="QListWidget" name="locationsSelectView"/>
+         <widget class="QListWidget" name="locationsFinalView"/>
         </item>
         <item>
-         <widget class="QListWidget" name="itemsSelectView"/>
-        </item>
-        <item>
-         <widget class="QFrame" name="frame_9">
-          <property name="frameShape">
-           <enum>QFrame::StyledPanel</enum>
+         <widget class="QTableWidget" name="finalItemsView">
+          <property name="editTriggers">
+           <set>QAbstractItemView::NoEditTriggers</set>
           </property>
-          <property name="frameShadow">
-           <enum>QFrame::Raised</enum>
+          <property name="selectionMode">
+           <enum>QAbstractItemView::NoSelection</enum>
           </property>
-          <layout class="QFormLayout" name="formLayout_2">
-           <item row="1" column="1">
-            <widget class="QLineEdit" name="itemPriceView">
-             <property name="readOnly">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="0">
-            <widget class="QLabel" name="label_5">
-             <property name="text">
-              <string>Item</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="1">
-            <widget class="QLineEdit" name="itemNameView">
-             <property name="readOnly">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="0">
-            <widget class="QLabel" name="label_6">
-             <property name="text">
-              <string>Price</string>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="0">
-            <spacer name="verticalSpacer_3">
-             <property name="orientation">
-              <enum>Qt::Vertical</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>20</width>
-               <height>40</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-          </layout>
          </widget>
         </item>
        </layout>
@@ -194,6 +148,13 @@
               <item>
                <widget class="QLineEdit" name="modifierEdit"/>
               </item>
+              <item>
+               <widget class="QPushButton" name="saveModifier">
+                <property name="text">
+                 <string>Save</string>
+                </property>
+               </widget>
+              </item>
              </layout>
             </widget>
            </item>
@@ -206,6 +167,20 @@
               <enum>QFrame::Raised</enum>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_4">
+              <item>
+               <widget class="QComboBox" name="modifierTypeSelect">
+                <item>
+                 <property name="text">
+                  <string>Groups</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Items</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
               <item>
                <widget class="QListWidget" name="locationModifierSelection"/>
               </item>
@@ -423,7 +398,40 @@
     </item>
    </layout>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1035</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionNew"/>
+    <addaction name="actionOpen"/>
+    <addaction name="actionSave"/>
+   </widget>
+   <addaction name="menuFile"/>
+  </widget>
+  <action name="actionNew">
+   <property name="text">
+    <string>New</string>
+   </property>
+  </action>
+  <action name="actionOpen">
+   <property name="text">
+    <string>Open</string>
+   </property>
+  </action>
+  <action name="actionSave">
+   <property name="text">
+    <string>Save</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>

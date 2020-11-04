@@ -1,0 +1,2 @@
+[[{"name": "aaaaaaaaaaa", "basePrice": 1.0, "groups": []} ,{"name": "ssssssssssss", "basePrice": 1.0, "groups": []}],["sssss"], [{"name": "locat", "modifiers": "[{\"identifier\" : \"sssss\", \"modifier\" : 5.0 } ,{\"identifier\" : 0, \"modifier\" : 2.0 } ,{\"identifier\" : 1, \"modifier\" : 1.0 }]"}]]
+

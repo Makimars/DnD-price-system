@@ -1,16 +1,15 @@
-from PyQt5 import QtWidgets
+import json
 
-
-class Item(QtWidgets.QListWidgetItem):
+class Item():
 
     def __init__(self, name):
         super().__init__()
-        self.setText(name)
+        self.name = name
         self.basePrice = 1
         self.groups = []
 
-    def setBasePrice(self, price):
-        self.basePrice = price
+    def __str__(self):
+        return self.name
 
-    def getBasePrice(self):
-        return self.basePrice
+    def json(self):
+        return {self.name, self.basePrice, self.groups}
