@@ -23,7 +23,6 @@ _append_run_path()
 from PyQt5 import QtWidgets
 from MainWindow import MainWindow
 
-
 app = QtWidgets.QApplication(sys.argv)
 
 my_mainWindow = MainWindow()

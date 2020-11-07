@@ -1,16 +1,19 @@
 import json
 
-from PyQt5 import QtWidgets, QtGui
+from PyQt5 import QtWidgets, QtGui, QtCore
+from PyQt5 import Qt
 from Ui_MainWindow import Ui_MainWindow
 from Item import Item
 from Location import Location, LocationContainer
 from Modifier import Modifier
+
 
 class Container:
     def __init__(self, items, groups, locations):
         self.items = items
         self.groups = groups
         self.locations = locations
+
 
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
@@ -24,7 +27,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.deleteItem.clicked.connect(self.deleteItemClicked)
         self.ui.itemNameEdit.editingFinished.connect(self.saveItem)
         self.ui.itemBasePrice.editingFinished.connect(self.saveItem)
-        self.ui.itemGroupSelect.itemSelectionChanged.connect(self.saveItem)
+        self.ui.itemGroupSelect.itemClicked.connect(self.saveItem)
         self.ui.itemEditView.currentItemChanged.connect(self.itemEditViewSelectionChanged)
         self.ui.tabWidget.currentChanged.connect(self.refreshGroupsForItems)
         # groups
@@ -73,24 +76,27 @@ class MainWindow(QtWidgets.QMainWindow):
         if item is None:
             return
         item.name = self.ui.itemNameEdit.text()
-        item.basePrice = float(self.ui.itemBasePrice.text())
+        item.basePrice = float(self.ui.itemBasePrice.text().replace(",", "."))
         self.ui.itemEditView.currentItem().setText(self.ui.itemNameEdit.text())
         # groups
         item.groups.clear()
-        items = self.ui.itemGroupSelect.selectedItems()
-        for i in range(0, items.__len__()):
-            item.groups.append(items[i].text())
+        for i in range(0, self.ui.itemGroupSelect.count()):
+            state = self.ui.itemGroupSelect.item(i).checkState()
+            if self.ui.itemGroupSelect.item(i).checkState() == Qt.Qt.Checked:
+                item.groups.append(self.ui.itemGroupSelect.item(i).text())
 
     def itemEditViewSelectionChanged(self):
         item = self.items[self.ui.itemEditView.currentRow()]
         self.ui.itemNameEdit.setText(item.name)
         self.ui.itemBasePrice.setText(str(item.basePrice))
         # groups
-        self.ui.itemGroupSelect.clearSelection()
         for i in range(0, self.ui.itemGroupSelect.count()):
             group = self.ui.itemGroupSelect.item(i)
             if group.text() in item.groups:
-                group.setSelected(True)
+                group.setCheckState(Qt.Qt.Checked)
+            else:
+                group.setCheckState(Qt.Qt.Unchecked)
+
 
     def refreshGroupsForItems(self):
         while self.ui.itemGroupSelect.count() > 0:
@@ -98,6 +104,10 @@ class MainWindow(QtWidgets.QMainWindow):
 
         for group in self.groups:
             self.ui.itemGroupSelect.addItem(group)
+        for i in range(0, self.ui.itemGroupSelect.count()):
+            item = self.ui.itemGroupSelect.item(i)
+            item.setFlags(item.flags() | Qt.Qt.ItemIsUserCheckable)
+            item.setCheckState(Qt.Qt.Unchecked)
 
     # Groups management
 
@@ -147,7 +157,7 @@ class MainWindow(QtWidgets.QMainWindow):
             for group in self.groups:
                 self.ui.locationModifierSelection.addItem(group)
                 # highlight Groups as gray
-                #self.ui.locationModifierSelection.item(self.ui.locationModifierSelection.count()-1).setBackground(QtGui.QBrush(QtGui.QColor(200, 200, 200)))
+                # self.ui.locationModifierSelection.item(self.ui.locationModifierSelection.count()-1).setBackground(QtGui.QBrush(QtGui.QColor(200, 200, 200)))
         else:
             for item in self.items:
                 self.ui.locationModifierSelection.addItem(item.name)
@@ -178,7 +188,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         location = self.locations[self.ui.locationSelection.currentRow()]
         modifier = location.getModifier(self.ui.locationModifierSelection.currentItem().text())
-        modifier.modifier = float(self.ui.modifierEdit.text())
+        modifier.modifier = float(self.ui.modifierEdit.text().replace(",", "."))
 
     # Final view
 
@@ -213,7 +223,7 @@ class MainWindow(QtWidgets.QMainWindow):
             finalPrice = self.items[i].basePrice * itemModifier
             self.ui.finalItemsView.setItem(i, 1, QtWidgets.QTableWidgetItem(str(finalPrice)))
 
-    #munbar
+    # menubar
 
     def newFile(self):
         self.items.clear()
