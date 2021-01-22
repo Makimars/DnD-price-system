@@ -76,12 +76,12 @@ class MainWindow(QtWidgets.QMainWindow):
         if item is None:
             return
         item.name = self.ui.itemNameEdit.text()
-        item.basePrice = float(self.ui.itemBasePrice.text().replace(",", "."))
+        price = self.ui.itemBasePrice.text().replace(',', '.')
+        item.basePrice = float(price)
         self.ui.itemEditView.currentItem().setText(self.ui.itemNameEdit.text())
         # groups
         item.groups.clear()
         for i in range(0, self.ui.itemGroupSelect.count()):
-            state = self.ui.itemGroupSelect.item(i).checkState()
             if self.ui.itemGroupSelect.item(i).checkState() == Qt.Qt.Checked:
                 item.groups.append(self.ui.itemGroupSelect.item(i).text())
 
