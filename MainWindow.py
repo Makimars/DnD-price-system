@@ -1,8 +1,10 @@
 import json
 
-from PyQt5 import QtWidgets, QtGui, QtCore
+from PyQt5 import QtWidgets, QtGui
 from PyQt5 import Qt
+
 from Ui_MainWindow import Ui_MainWindow
+
 from Item import Item
 from Location import Location, LocationContainer
 from Modifier import Modifier
@@ -223,20 +225,37 @@ class MainWindow(QtWidgets.QMainWindow):
             finalPrice = self.items[i].basePrice * itemModifier
             self.ui.finalItemsView.setItem(i, 1, QtWidgets.QTableWidgetItem(str(finalPrice)))
 
+    # general
+
+    def refreshEverything(self):
+        self.refreshModifiers()
+        self.refreshFinalItemsView()
+        self.refreshGroupsForItems()
+        self.refreshFinalLocationsView()
+        self.refreshModifiersForLocations()
+
     # menubar
 
     def newFile(self):
         self.items.clear()
         self.groups.clear()
         self.locations.clear()
+        self.refreshEverything()
 
     def openFile(self):
         self.newFile()
-        print("file: ")
-        array = json.loads(input())
+
+        fileName = QtWidgets.QFileDialog.getOpenFileName(self, 'Open File', filter="Json files (*.json)")
+        if fileName.__len__() == 0:
+            return
+        f = open(fileName[0], "r")
+        file = f.read()
+        f.close()
+
+        itemArray = json.loads(file)
 
         # load items
-        for item in array[0]:
+        for item in itemArray[0]:
             newItem = Item(item["name"])
             newItem.basePrice = item["basePrice"]
             newItem.groups = item["groups"]
@@ -244,16 +263,18 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ui.itemEditView.addItem(newItem.name)
 
         # load groups
-        for group in array[1]:
+        for group in itemArray[1]:
             self.groups.append(group)
             self.ui.groupEditView.addItem(group)
 
         # load locations
-        for location in array[2]:
+        for location in itemArray[2]:
             loc = Location(location["name"])
             loc.loadModifiers(location["modifiers"], self.items, self.groups)
             self.locations.append(loc)
             self.ui.locationSelection.addItem(loc)
+
+        self.refreshEverything()
 
     def saveFile(self):
         file = "["
@@ -279,4 +300,15 @@ class MainWindow(QtWidgets.QMainWindow):
         file += "]"
 
         file += "]"
-        print(file)
+
+        dialog = QtWidgets.QFileDialog()
+        dialog.setAcceptMode(QtWidgets.QFileDialog.AcceptSave)
+        dialog.setWindowTitle("Save file")
+        dialog.setNameFilter("Json files (*.json)")
+        dialog.setDefaultSuffix("json")
+
+        dialog.exec()
+        if dialog.selectedFiles().__len__() > 0:
+            f = open(dialog.selectedFiles()[0], "w")
+            f.write(file)
+            f.close()
