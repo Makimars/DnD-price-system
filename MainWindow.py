@@ -79,8 +79,12 @@ class MainWindow(QtWidgets.QMainWindow):
             return
         item.name = self.ui.itemNameEdit.text()
         price = self.ui.itemBasePrice.text().replace(',', '.')
+        price = price + "0"
         item.basePrice = float(price)
-        self.ui.itemEditView.currentItem().setText(self.ui.itemNameEdit.text())
+
+        currentItem = self.ui.itemEditView.currentItem()
+        if self.ui.itemEditView.currentItem() is not None:
+            currentItem.setText(self.ui.itemNameEdit.text())
         # groups
         item.groups.clear()
         for i in range(0, self.ui.itemGroupSelect.count()):
@@ -204,6 +208,9 @@ class MainWindow(QtWidgets.QMainWindow):
     def refreshFinalItemsView(self):
         self.ui.finalItemsView.clear()
         self.ui.finalItemsView.setRowCount(self.items.__len__())
+
+        if self.locations.__len__() == 0:
+            return
 
         for i in range(0, self.items.__len__()):
             self.ui.finalItemsView.setItem(i, 0, QtWidgets.QTableWidgetItem(self.items[i].name))
